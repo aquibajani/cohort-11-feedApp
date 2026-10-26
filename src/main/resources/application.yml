@@ -1,7 +1,8 @@
 # Logger
-logging.level:
-  web: DEBUG
-  '[com.bptn.feedApp]': DEBUG
+logging:
+  level:
+    web: DEBUG
+    '[com.bptn.feedApp]': DEBUG
 
 # Active Profile
 spring:
@@ -25,15 +26,13 @@ spring:
   jpa:
     show-sql: true
     open-in-view: false
-    properties:  
-      jakarta:
-        persistence:
-          sharedCache:
-            mode: ENABLE_SELECTIVE
-        hibernate:
-          '[format_sql]': true        
+    properties:
+      jakarta.persistence.sharedCache.mode: ENABLE_SELECTIVE
       hibernate:
-          naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        format_sql: true
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 
 ---
 
@@ -41,7 +40,7 @@ spring:
 spring:
   config:
     activate:
-      on-profile: default 
+      on-profile: default
 
 # Database Settings
   datasource:
