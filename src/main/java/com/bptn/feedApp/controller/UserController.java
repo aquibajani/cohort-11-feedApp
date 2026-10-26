@@ -8,7 +8,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.bptn.feedApp.service.UserService;
 import java.util.List;
+import java.util.Optional;
+
 import com.bptn.feedApp.jdbc.UserBean;
+import com.bptn.feedApp.jpa.User;
+
 import org.springframework.web.bind.annotation.PathVariable;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -30,20 +34,20 @@ public class UserController {
 	}
 	
 	@GetMapping("/")
-	public List<UserBean> listUsers() {
+	public List<User> listUsers() {
 		logger.debug("The listUsers() method was invoked!");
 		return this.userService.listUsers();
 	}
 	
 	@GetMapping("/{username}")
-	public UserBean findByUsername(@PathVariable String username) {
+	public Optional<User> findByUsername(@PathVariable String username) {
 		logger.debug("The findByUsername() method was invoked!, username={}", username);
 		return this.userService.findByUsername(username);
 	}
 	
 	@GetMapping("/{first}/{last}/{username}/{password}/{phone}/{emailId}")
 	public String createUser( @PathVariable String first, @PathVariable String last, @PathVariable String username, @PathVariable String password, @PathVariable String phone, @PathVariable String emailId) {
-		UserBean user = new UserBean();
+		User user = new User();
         
 		user.setFirstName(first);
 		user.setLastName(last);
