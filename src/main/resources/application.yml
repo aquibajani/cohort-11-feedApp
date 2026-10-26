@@ -34,3 +34,22 @@ spring:
           '[format_sql]': true        
       hibernate:
           naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+---
+
+# Default Profile
+spring:
+  config:
+    activate:
+      on-profile: default 
+
+# Database Settings
+  datasource:
+    url: jdbc:postgresql://localhost:5432/feedApp
+    username: postgres
+    password: pg123
+    hikari:
+      maximum-pool-size: 2
+  jpa:
+    hibernate:
+      ddl-auto: validate
