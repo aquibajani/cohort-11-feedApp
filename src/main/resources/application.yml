@@ -2,3 +2,35 @@
 logging.level:
   web: DEBUG
   '[com.bptn.feedApp]': DEBUG
+
+# Active Profile
+spring:
+  profiles:
+    active: default
+
+# Banner Text
+  banner:
+    charset: UTF-8
+    location: classpath:/banner/academy.txt
+
+# Jackson Settings
+  jackson:
+    time-zone: America/Toronto
+    date-format: "yyyy-MM-dd HH:mm:ss"
+
+# Common Database Settings
+  sql:
+    init:
+      continue-on-error: false
+  jpa:
+    show-sql: true
+    open-in-view: false
+    properties:  
+      jakarta:
+        persistence:
+          sharedCache:
+            mode: ENABLE_SELECTIVE
+        hibernate:
+          '[format_sql]': true        
+      hibernate:
+          naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
