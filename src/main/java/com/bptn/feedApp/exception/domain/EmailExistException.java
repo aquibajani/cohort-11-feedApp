@@ -1,4 +1,4 @@
-package com.bptn.feedApp.exception;
+package com.bptn.feedApp.exception.domain;
 
 public class EmailExistException extends RuntimeException {
 
