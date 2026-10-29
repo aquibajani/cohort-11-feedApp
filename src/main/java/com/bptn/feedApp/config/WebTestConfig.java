@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 @Configuration
 @Profile("test")
 public class WebTestConfig {
-	
+
 	@Autowired
 	ResourceProvider resourceProvider;
 	
@@ -21,5 +21,6 @@ public class WebTestConfig {
 	     return Server.createTcpServer(this.resourceProvider.getH2ServerParams());
 
 	}
-
+	
+	
 }

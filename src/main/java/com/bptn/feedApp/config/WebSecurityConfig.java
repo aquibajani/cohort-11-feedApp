@@ -11,12 +11,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
-import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
-import java.util.Arrays;
-import org.springframework.security.web.util.matcher.RequestMatcher;
+
 import static org.springframework.security.config.Customizer.withDefaults;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -46,24 +42,15 @@ public class WebSecurityConfig {
 	    return authenticationConfiguration.getAuthenticationManager();
 	}
 	
-	@Bean
-	MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
-	        return new MvcRequestMatcher.Builder(introspector);
-	}
-	
-	private RequestMatcher[] getMatchers(MvcRequestMatcher.Builder mvc) {
-	        
-	        return Arrays.stream(this.provider.getJwtExcludedUrls())
-	                .map(url -> mvc.pattern(url))
-	                .toArray(RequestMatcher[]::new);
-	}
-	
 	@Bean("test")
-	SecurityFilterChain securityFilterChainTest(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
+	SecurityFilterChain securityFilterChainTest(HttpSecurity http) throws Exception {
 	    
 	    http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-	        .authorizeHttpRequests((requests) -> requests.requestMatchers(PathRequest.toH2Console()).permitAll()
-	            .requestMatchers(this.getMatchers(mvc)).permitAll()
+	        .authorizeHttpRequests((requests) -> requests
+	            // Replaced PathRequest.toH2Console() with the direct String path
+	            .requestMatchers("/h2-console/**").permitAll() 
+	            // Pass your String[] array directly into requestMatchers!
+	            .requestMatchers(this.provider.getJwtExcludedUrls()).permitAll()
 	            .anyRequest().authenticated())
 	            .exceptionHandling((handler)-> handler.authenticationEntryPoint(this.customAuthEntryPoint))
 	            .addFilterBefore(this.jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -76,10 +63,12 @@ public class WebSecurityConfig {
 	
 	@Bean
 	@ConditionalOnMissingBean(SecurityFilterChain.class)
-	SecurityFilterChain securityFilterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 	        
 	        http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-	          .authorizeHttpRequests((requests) -> requests.requestMatchers(this.getMatchers(mvc)).permitAll()
+	          .authorizeHttpRequests((requests) -> requests
+	          // Pass your String[] array directly here too
+	          .requestMatchers(this.provider.getJwtExcludedUrls()).permitAll()
 	          .anyRequest().authenticated())
 	          .exceptionHandling((handler)-> handler.authenticationEntryPoint(this.customAuthEntryPoint))       
 	          .addFilterBefore(this.jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
